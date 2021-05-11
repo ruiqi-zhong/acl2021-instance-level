@@ -10,11 +10,11 @@ The paper is accepted to ACL 2021 Findings and will be public soon.
 ### 1. Pre-trained Models
 
 You can download all of our pre-trained BERT models from [here](https://drive.google.com/drive/folders/1--niMIJNd3iMzc4UENZUc_MFXGdzLPDz?usp=sharing). 
-We experimented with 5 different sizes (mini, small, medium, base, large) as described in the [official BERT github Repo](https://github.com/google-research/bert). 
-Our models are also stored in the same format.
+We experimented with 5 different sizes (mini, small, medium, base, large) as described in the [official BERT github Repo](https://github.com/google-research/bert) and stored them in the same format.
+We used the exact same pre-training code as the oringal BERT paper and similar training settings, except that we used the training corpus from [this paper](https://arxiv.org/pdf/2002.11794.pdf), reduced the context size from 512 to 128, and increase the number of training steps from 1M to 2M.
+For each size, we pre-trained 10 times with the identical procedure but different random seeds.  
 
 The directory for the medium-sized BERT model with pre-training seed 3 after pretraining for 2000000 steps is ```pretrained/medium/pretrain_seed3step2000000```.
-We used the exact same pre-training code as BERT and similar training settings, except that we used the training corpus from [this paper](https://arxiv.org/pdf/2002.11794.pdf), reduced the context size from 512 to 128, and increase the number of training steps from 1M to 2M. 
  
  ### 2. Model Predictions
  
