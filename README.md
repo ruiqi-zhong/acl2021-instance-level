@@ -9,22 +9,22 @@ The paper will be public soon.
 
 ### 1. Pre-trained Models
 
-You can download all our pre-trained BERT models from [here](https://drive.google.com/drive/folders/1--niMIJNd3iMzc4UENZUc_MFXGdzLPDz?usp=sharing). 
+You can download all of our pre-trained BERT models from [here](https://drive.google.com/drive/folders/1--niMIJNd3iMzc4UENZUc_MFXGdzLPDz?usp=sharing). 
 We experimented with 5 different sizes (mini, small, medium, base, large) as described in the [official BERT github Repo](https://github.com/google-research/bert). 
 Our models are also stored in the same format.
 
-The directory for the medium model with pre-training seed 3 after being pre-trained for 2000000 steps is ```pretrained/medium/pretrain_seed3step2000000```.
-We used the exact same pre-training code as BERT and similar training settings, except that we used the training corpus from , reduced the context size from 512 to 128, and increase the number of training steps from 1M to 2M. 
+The directory for the medium-sized BERT model with pre-training seed 3 after pretraining for 2000000 steps is ```pretrained/medium/pretrain_seed3step2000000```.
+We used the exact same pre-training code as BERT and similar training settings, except that we used the training corpus from [this paper](https://arxiv.org/pdf/2002.11794.pdf), reduced the context size from 512 to 128, and increase the number of training steps from 1M to 2M. 
  
  ### 2. Model Predictions
  
 We release the model predictions on 3 different tasks (sst-2, MNLI, and QQP) for 5 different model sizes, each with 10 pretraining seeds and 5 finetuning seeds, as described in the paper. 
-Additionally, we provide the model predictions for several out-of-domain distributions (e.g. SNLI/HANS for MNLI, TwitterPPDB for QQP), and predictions at the 3.0, 3.33, 3.67 training epoch (in the paper we always finetune for 4 epochs).
+Additionally, we provide the model predictions for several out-of-domain datasets (e.g. SNLI/HANS for MNLI, TwitterPPDB for QQP) after training for 3.0, 3.33, 3.67 epochs (in the paper we always finetune for 4 epochs).
 You can download them from [here](https://drive.google.com/drive/folders/1jMqFE8SekJIjVIYGgoP5dIarz4JcWMmC?usp=sharing).
 
 #### 2.1 model_data_for_release/
-The datapoints and the raw probability predictions can be seen in the ```model_data_for_release/``` folder. 
-For each task of MNLI, QQP and SST-2, it has the following files/folders (we performed 5 fold cross-validation on SST-2):
+This folder contains the raw model predictions and the corresponding datapoints.
+For each task of MNLI, QQP and SST-2, there is a folder with the following files/folders (we performed 5 fold cross-validation on SST-2):
 
 ```data.json``` contains the data used for fine-tuning (training) and prediction, where each datapoint is represented as a dictionary. 
 For example,
@@ -54,9 +54,9 @@ We downloaded our QQP data from [here](https://github.com/shreydesai/calibration
 
 ```size2hyperparam.json``` contains the hyper-parameter used for different model sizes. 
 
-```results``` is the folder that contains the models' prediction, each in a .tsv format, representing a matrix of dimension (number of datapoints, number of classes).
+```results/``` is the folder that contains the models' prediction, each in a .tsv format, representing a matrix of dimension (number of datapoints, number of classes).
 Each row is the models' predicted probability for each class, and correspond to one datapoint in ```data['predict']```. 
-```slargep9f5epoch9over3.tsv``` means the predictions of the large size model with pretraining seed 9 finetuning seed 5 evaluated at (9/3)=3 epoch.
+```results/slargep8f5epoch9over3.tsv``` means the predictions of the large size model with pretraining seed 8 finetuning seed 5 evaluated at (9/3)=3 epoch.
 
 #### 2.2 Processed Predictions: Correctness tensors
 
@@ -67,7 +67,7 @@ We extract 3 types of "correctness tensors" from the .tsv and data.json files, w
 The results are dumped into ```correctness/```, ```correctness_p/```, ```ensemble_c/```
 
 
-```correctness/```: 1 if the model prediction is correct, 0 otherwise. For example
+```correctness/```: stores binary tensors. 1 if the model prediction is correct, 0 otherwise. For example
 
 ```buildoutcfg
 import pickle as pkl
@@ -79,6 +79,18 @@ print(qqp_size2correctness['large'].shape) # output: (79497, 10, 5, 4). 79497 is
 ```correctness_p/```: Same as "correctness", the probability assigned to the correct class.
 
 ```ensemble_c/```: the correctness tensor using the last checkpoint only, after marginalizing over all fine-tuning seeds.
+
+#### 2.3 Code to Produce Model Predictions
+
+We use almost the exact same code as the original BERT paper to fine-tune a pre-trained model. 
+To convert the data into the tensorflow format, run
+
+```python3 process_input.py```
+
+To finetune the pretrained models, run, for example, 
+
+``` python3 run_classifier.py --data_dir qqp/ --pretrain_seed 10 --model_size medium --dataorder_seed 10 --initialization_seed 10 --tpu_name lm-4```
+
 
 ### 3. Code
 
