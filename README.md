@@ -5,7 +5,7 @@ Authors: Ruiqi Zhong, Dhruba Ghosh, Dan Klein, Jacob Steinhardt
 This GitHub Repo contains the pretrained models, model predictions (data) and code for the experiments.
 If you have any questions, need additional information about the models/data, or want to request a new feature, feel free to send an email to ruiqi-zhong@berkeley.edu .
 
-The paper is accepted to ACL 2021 Findings and will be public soon. 
+The paper is accepted to ACL 2021 Findings. Paper link: https://arxiv.org/abs/2105.06020 
 
 ### 1. Pre-trained Models
 
